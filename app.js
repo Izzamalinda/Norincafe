@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const ejs = require("ejs");
 const authRoutes = require("./routes/auth"); 
+const sequelize = require("./config/db");  // koneksi db
 require("dotenv").config(); // load .env
 
 const app = express();
@@ -19,5 +20,12 @@ app.get("/", (req, res) => {
 
 app.use("/", authRoutes);  // <-- aktifkan login
 // app.use("/admin", adminRoutes); // ini aktif nanti setelah ada adminRoutes
+
+sequelize.sync()
+  .then(() => {
+    console.log("Database & tables created!");
+    app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+  })
+  .catch(err => console.error("DB Sync error:", err));
 
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));

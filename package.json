@@ -16,6 +16,10 @@
     "ejs-mate": "^4.0.0",
     "express": "^5.1.0",
     "mysql2": "^3.14.5",
+    "sequelize": "^6.37.7",
     "tailwindcss": "^4.1.13"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.3"
   }
 }

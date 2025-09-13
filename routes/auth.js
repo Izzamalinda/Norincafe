@@ -1,29 +1,32 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../config/db");
+const User = require("../models/user");
 
+// GET login page
 router.get("/login", (req, res) => {
   res.render("login", { title: "Norin Cafe", error: null });
 });
 
-router.post("/login", (req, res) => {
+// POST login
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
-    if (err) return res.send("Error query database");
+  try {
+    const user = await User.findOne({ where: { username } });
 
-    if (results.length === 0) {
+    if (!user) {
       return res.render("login", { title: "Norin Cafe", error: "User tidak ditemukan!" });
     }
-
-    const user = results[0];
-
+    
     if (user.password === password) {
       return res.redirect("/admin");
     } else {
       return res.render("login", { title: "Norin Cafe", error: "Password salah!" });
     }
-  });
+  } catch (err) {
+    console.error(err);
+    res.render("login", { title: "Norin Cafe", error: "Terjadi error server!" });
+  }
 });
 
 module.exports = router;
