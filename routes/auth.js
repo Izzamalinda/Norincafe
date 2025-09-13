@@ -1,12 +1,29 @@
-app.get("/login", (req, res) => {
-  res.render("login", { title: "Norin Cafe" });
+const express = require("express");
+const router = express.Router();
+const db = require("../config/db");
+
+router.get("/login", (req, res) => {
+  res.render("login", { title: "Norin Cafe", error: null });
 });
 
-app.post("/login", (req, res) => {
-  // sementara, cek dummy username & password
+router.post("/login", (req, res) => {
   const { username, password } = req.body;
-  if (username === "admin" && password === "1234") {
-    return res.redirect("/"); // masuk ke dashboard
-  }
-  res.render("login", { error: "Username atau password salah!" });
+
+  db.query("SELECT * FROM users WHERE username = ?", [username], (err, results) => {
+    if (err) return res.send("Error query database");
+
+    if (results.length === 0) {
+      return res.render("login", { title: "Norin Cafe", error: "User tidak ditemukan!" });
+    }
+
+    const user = results[0];
+
+    if (user.password === password) {
+      return res.redirect("/admin");
+    } else {
+      return res.render("login", { title: "Norin Cafe", error: "Password salah!" });
+    }
+  });
 });
+
+module.exports = router;
