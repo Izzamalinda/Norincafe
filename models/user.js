@@ -10,6 +10,14 @@ const User = sequelize.define("User", {
   password: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  security_question: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  security_answer: {
+    type: DataTypes.STRING,
+    allowNull: false,
   }
 }, {
   tableName: "users",   
